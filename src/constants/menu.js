@@ -11,9 +11,15 @@ export const adminMenu = [
       // },
 
       {
-        label: 'Người dùng',
+        label: 'Người dùng ',
         icon: 'pi pi-fw pi-users',
         to: '/admin/users',
+        permission: 'admin.users.index',
+      },
+      {
+        label: 'Người dùng demo',
+        icon: 'pi pi-fw pi-users',
+        to: '/admin/nguoidung',
         permission: 'admin.users.index',
       },
       // {

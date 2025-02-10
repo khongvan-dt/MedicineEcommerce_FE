@@ -13,6 +13,11 @@ const model = ref([
         icon: 'pi pi-fw pi-users',
         to: '/admin/users',
         permission: 'admin.users.index',
+      },{
+        label: 'Người dùng demo',
+        icon: 'pi pi-fw pi-users',
+        to: '/admin/nguoidung',
+        permission: 'users.index',
       },
     ],
   },

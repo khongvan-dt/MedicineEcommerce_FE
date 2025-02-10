@@ -12,6 +12,14 @@ const admin = {
       },
       component: () => import('@/views/admin/user/Index.vue')
     },
+    {
+      path: 'nguoidung',
+      name: 'admin-nguoidung',
+      meta: {
+        breadcrumb: ['Quản lý người dùng']
+      },
+      component: () => import('@/views/users/Index.vue')
+    },
   ]
 };
 
