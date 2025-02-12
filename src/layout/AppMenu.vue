@@ -24,6 +24,13 @@ const model = ref([
             to: '/admin/roles',
             permission: 'admin.roles.index',
           },
+          {
+            label: 'Người dùng demo',
+            icon: 'pi pi-fw pi-users',
+            to: '/admin/nguoidung',
+            permission: 'users.index',
+
+          },
         ]
       },
     ],
