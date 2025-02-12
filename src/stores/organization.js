@@ -1,5 +1,6 @@
 import { dataTablePagination } from '@/constants/app';
 import { sendDelete, sendGet, sendPatch, sendPost } from '@/services/axios';
+import { getPerPage } from '@/services/localStorage';
 import { useAppStore } from '@/stores/app';
 import moment from 'moment';
 import { defineStore } from 'pinia';
@@ -99,7 +100,7 @@ export const useOrganizationStore = defineStore('organization', {
     pagination: {
       page: 1,
       total: 0,
-      perPage: dataTablePagination.perPage,
+      perPage: getPerPage() ?? dataTablePagination.perPage,
       first: 0,
     },
     showSidebar: false,

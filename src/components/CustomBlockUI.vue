@@ -1,5 +1,5 @@
 <template>
-  <BlockUI :blocked="blocked" class="h-full" :style="{ backgroundColor: bgColor }">
+  <BlockUI :blocked="blocked" class="h-full -m-4">
     <ProgressSpinner v-if="blocked"
       style="width: 60px; height: 60px; position: absolute; top: calc(50% - 30px); right: calc(50% - 30px); z-index: 10000" />
     <slot />
@@ -13,11 +13,6 @@ export default {
       type: Boolean,
       default: false,
     },
-  },
-  data() {
-    return {
-      bgColor: 'rgba(0,0,0, 0.01) !important'
-    }
   }
 };
 </script>

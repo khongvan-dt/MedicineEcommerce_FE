@@ -1,5 +1,4 @@
 <script>
-import { ref } from "vue";
 import CustomBlockUI from '@/components/CustomBlockUI.vue';
 
 export default {
@@ -54,13 +53,13 @@ export default {
       </div>
     </template>
     <CustomBlockUI :blocked="isLoading">
-      <div class="flex flex-col md:flex-col gap-4">
+      <div class="flex flex-col md:flex-col gap-4 p-4">
         <slot />
       </div>
     </CustomBlockUI>
     <template #footer>
       <Button label="Huỷ" icon="pi pi-times" text severity="secondary" @click="onCancel" autofocus />
-      <Button label="Lưu" icon="pi pi-check" @click="onSave" autofocus />
+      <Button label="Lưu" icon="pi pi-check" @click="onSave" autofocus :loading="isLoading"/>
     </template>
   </Dialog>
 </template>

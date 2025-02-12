@@ -88,13 +88,14 @@ export default {
     ]);
     const checkedAll = ref(false);
     const tableRef = ref();
+    const perPage = ref(parseInt(getPerPage()??dataTablePagination.perPage));
 
     return {
       organizationStore,
       columns,
       filterFollow,
       checkedAll,
-      perPage: getPerPage()??dataTablePagination.perPage,
+      perPage,
       tableRef,
     };
   },
@@ -312,7 +313,6 @@ export default {
       this.organizationStore.$patch({ lazyParams: lazyParams, reLoaded: true });
     },
     onRows(event) {
-      console.log(event);
       const pagination = {
         ...this.pagination,
         page: 1,
@@ -349,7 +349,7 @@ export default {
   <div class="card">
     <ConfirmDialog></ConfirmDialog>
     <DataTable ref="tableRef" :value="organizations" dataKey="id" :paginator="true" filterDisplay="menu"
-      :loading="isLoading" lazy v-model:rows="pagination.perPage"
+      :loading="isLoading" lazy v-model:rows="perPage"
       :paginatorTemplate="dataTablePagination.paginatorTemplate" showCurrentPageReport
       :currentPageReportTemplate="dataTablePagination.currentPageReportTemplate"
       :rowsPerPageOptions="dataTablePagination.rowsPerPageOptions" rowHover scrollable responsiveLayout
@@ -434,7 +434,7 @@ export default {
           {{ data.created_at }}
         </template>
         <template #filter="{ filterModel }">
-          <Calendar v-model="filterModel.value" dateFormat="dd/mm/yy" placeholder="Ngày/Tháng/Năm" mask="99/99/9999" />
+          <DatePicker v-model="filterModel.value" dateFormat="dd/mm/yy" placeholder="Ngày/Tháng/Năm" mask="99/99/9999" />
         </template>
       </Column>
       <Column v-if="visibleColumns.columns?.includes('created_by')" field="created_by" header="Người tạo"

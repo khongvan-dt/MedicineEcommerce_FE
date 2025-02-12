@@ -11,8 +11,20 @@ const model = ref([
       {
         label: 'Người dùng',
         icon: 'pi pi-fw pi-users',
-        to: '/admin/users',
-        permission: 'admin.users.index',
+        items: [
+          {
+            label: 'Danh sách',
+            icon: 'pi pi-fw pi-list',
+            to: '/admin/users',
+            permission: 'admin.users.index',
+          },
+          {
+            label: 'Vai trò',
+            icon: 'pi pi-fw pi-id-card',
+            to: '/admin/roles',
+            permission: 'admin.roles.index',
+          },
+        ]
       },
     ],
   },

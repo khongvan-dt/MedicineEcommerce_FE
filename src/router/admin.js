@@ -8,9 +8,19 @@ const admin = {
       path: 'users',
       name: 'admin-user',
       meta: {
-        breadcrumb: ['Users']
+        breadcrumb: ['Users'],
+        permission: 'admin.users.index'
       },
       component: () => import('@/views/admin/user/Index.vue')
+    },
+    {
+      path: 'roles',
+      name: 'admin-roles',
+      meta: {
+        breadcrumb: ['roles'],
+        permission: 'admin.roles.index'
+      },
+      component: () => import('@/views/admin/user-management/roles/Index.vue')
     },
   ]
 };
