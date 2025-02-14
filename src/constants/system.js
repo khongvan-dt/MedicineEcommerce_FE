@@ -10,4 +10,5 @@ export const authentication = {
 export const system = {
   locale: 'locale',
   perPageKey: 'pagination_per_page',
+  layoutConfig: 'layout-config'
 }

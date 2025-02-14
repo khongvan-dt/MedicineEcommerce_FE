@@ -14,19 +14,25 @@ import ToastService from 'primevue/toastservice';
 import '@/assets/styles.scss';
 import '@/assets/tailwind.css';
 
+import primeVueLocale from '@/locales/primevue/vi';
+import { definePreset } from '@primevue/themes';
+import { getPresetExt } from './constants/theme';
+
 const app = createApp(App);
 const pinia = createPinia();
+const myPreset = definePreset(Aura, getPresetExt());
 
 app.use(router);
 app.use(pinia);
 app.use(i18n);
 app.use(PrimeVue, {
   theme: {
-    preset: Aura,
+    preset: myPreset,
     options: {
       darkModeSelector: '.app-dark'
     }
-  }
+  },
+  locale: primeVueLocale
 });
 app.use(ToastService);
 app.use(ConfirmationService);

@@ -69,10 +69,17 @@ export const destroy = () => {
 }
 
 export const setPerPage = (val) => {
-  window.localStorage.setItem(system.perPage, val);
+  window.localStorage.setItem(system.perPageKey, val);
 }
 export const getPerPage = () => {
-  return window.localStorage.getItem(system.perPage);
+  return window.localStorage.getItem(system.perPageKey);
+}
+
+export const setLayoutConfig = (val) => {
+  window.localStorage.setItem(system.layoutConfig, JSON.stringify(val));
+}
+export const getLayoutConfig = () => {
+  return JSON.parse(window.localStorage.getItem(system.layoutConfig));
 }
 
 export default {
@@ -89,10 +96,8 @@ export default {
   getExpiresIn,
   getLoginTime,
   destroy,
-  setUser,
-  getUser,
-  getLocale,
-  setLocale,
-  setPerPage,
-  getPerPage
+  setUser, getUser,
+  setLocale, getLocale,
+  setPerPage, getPerPage,
+  setLayoutConfig, getLayoutConfig
 }
