@@ -9,6 +9,7 @@ import AppTopbar from './AppTopbar.vue';
 import { useAppStore } from '@/stores/app';
 import { useToast } from 'primevue/usetoast';
 import { useRouter } from 'vue-router';
+import { setLayoutConfig } from '@/services/localStorage';
 
 const { layoutConfig, layoutState, isSidebarActive } = useLayout();
 const router = useRouter();
@@ -65,6 +66,10 @@ watch(isSidebarActive, (newVal) => {
     unbindOutsideClickListener();
   }
 });
+
+watch(layoutConfig, (newLayoutConfig)=> {
+  setLayoutConfig(newLayoutConfig);
+})
 
 onBeforeUnmount(() => {
   unbindOutsideClickListener();
