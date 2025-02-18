@@ -3,8 +3,7 @@ import { useLayout } from '@/layout/composables/layout';
 import { $t, updatePreset, updateSurfacePalette } from '@primevue/themes';
 import Aura from '@primevue/themes/aura';
 import Lara from '@primevue/themes/lara';
-import { ref, onBeforeMount } from 'vue';
-import { setLayoutConfig } from '@/services/localStorage';
+import { ref } from 'vue';
 import { primaryColors as pColors, surfaces as sColors, getPresetExt } from '@/constants/theme';
 
 defineProps({
@@ -41,7 +40,6 @@ function toggleDarkMode() {
     }
 
     document.startViewTransition(() => executeDarkModeToggle(event));
-    setLayoutConfig(layoutConfig);
 }
 
 function executeDarkModeToggle() {
@@ -57,7 +55,6 @@ function updateColors(type, color) {
     }
 
     applyTheme(type, color);
-    setLayoutConfig(layoutConfig);
 }
 
 function applyTheme(type, color) {
@@ -74,7 +71,6 @@ function onPresetChange() {
     const surfacePalette = surfaces.value.find((s) => s.name === layoutConfig.surface)?.palette;
 
     $t().preset(presetValue).preset(getPresetExt()).surfacePalette(surfacePalette).use({ useDefaultOptions: true });
-    setLayoutConfig(layoutConfig);
 }
 
 function setMenuMode(mode) {
@@ -83,19 +79,11 @@ function setMenuMode(mode) {
     if (layoutConfig.menuMode === 'static') {
         layoutState.staticMenuDesktopInactive = false;
     }
-    setLayoutConfig(layoutConfig);
 }
 function changeMenuTheme(menuTheme) {
   layoutConfig.menuTheme = menuTheme;
-  setLayoutConfig(layoutConfig);
 }
 
-onBeforeMount(()=> {
-    const presetValue = presets[layoutConfig.preset];
-    const surfacePalette = surfaces.value.find((s) => s.name === layoutConfig.surface)?.palette;
-
-    $t().preset(presetValue).preset(getPresetExt()).surfacePalette(surfacePalette).use({ useDefaultOptions: true });
-})
 </script>
 
 <template>

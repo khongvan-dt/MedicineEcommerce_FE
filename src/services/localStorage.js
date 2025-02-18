@@ -79,7 +79,12 @@ export const setLayoutConfig = (val) => {
   window.localStorage.setItem(system.layoutConfig, JSON.stringify(val));
 }
 export const getLayoutConfig = () => {
-  return JSON.parse(window.localStorage.getItem(system.layoutConfig));
+  try {
+    return JSON.parse(window.localStorage.getItem(system.layoutConfig));
+  }
+  catch (e) {
+    return null;
+  }
 }
 
 export default {
