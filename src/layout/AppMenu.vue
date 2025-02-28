@@ -5,18 +5,17 @@ import AppSubMenu from './AppSubMenu.vue';
 
 const model = ref([
   {
-    label: 'Quản lý',
+    label: 'Manage',
     icon: 'pi pi-fw pi-compass',
     items: [
       {
-        label: 'Người dùng',
+        label: 'Medicine',
         icon: 'pi pi-fw pi-users',
         items: [
           {
-            label: 'Danh sách',
+            label: 'List of medications',
             icon: 'pi pi-fw pi-list',
-            to: '/admin/users',
-            permission: 'admin.users.index',
+            to: '/admin/listmedications'
           },
           {
             label: 'Vai trò',
@@ -34,6 +33,18 @@ const model = ref([
         ]
       },
     ],
+  },
+  {
+    label: 'Giá vé',
+    icon: 'pi pi-fw pi-compass',
+    items:[
+    {
+            label: 'Quản lý giá vé',
+            icon: 'pi pi-fw pi-list',
+            to: '/admin/ticketprices',
+            permission: 'admin.giave.index',
+          },
+    ]
   },
   {
     label: 'Dashboards',

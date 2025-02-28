@@ -10,6 +10,7 @@ export const useRoleStore = defineStore('role', () => {
   const initModel = () => ({
     id: null,
     name: null,
+    description: null,
     active: 1  // true
   })
   const initForm = () => ({

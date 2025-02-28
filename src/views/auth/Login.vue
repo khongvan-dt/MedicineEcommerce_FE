@@ -33,7 +33,7 @@ export default {
   watch: {
     isAuthenticated(newValue) {
       if (newValue) {
-        this.router.push({ name: 'admin-user' });
+        this.router.push({ name: 'e-commerce' });
       }
     },
   },
@@ -81,11 +81,6 @@ export default {
   </div>
 
   <span class="text-2xl font-semibold my-4">{{ $t('auth.login.labels.welcome') }}</span>
-  <div class="mb-12 font-medium">
-    <span class="text-surface-600 dark:text-surface-200 font-medium leading-normal">Bạn là khách hàng mới?</span>
-    <a href="#" class="no-underline ml-2 text-primary cursor-pointer"
-      @click="this.$router.push({ name: 'Register' })">Đăng ký tại đây</a>
-  </div>
 
   <div class="w-full flex flex-col gap-4 px-4 pb-12">
     <div class="text-muted-color mb-6 px-12">{{ $t('auth.login.texts.welcome') }}</div>

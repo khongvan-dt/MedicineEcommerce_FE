@@ -1,7 +1,9 @@
 const apiEndPoint = {
   ADMIN: {
-    USER: '/setting/users',
+    USER: '/user/SearchUser',
     ROLE: '/setting/roles',
+    GIAVE: '/giave',
+    COMMON: '/common',
   },
 };
 

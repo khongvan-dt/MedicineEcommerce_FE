@@ -11,10 +11,10 @@ export const adminMenu = [
       // },
 
       {
-        label: 'Người dùng ',
+        label: 'Doctor',
         icon: 'pi pi-fw pi-users',
-        to: '/admin/users',
-        permission: 'admin.users.index',
+        to: '/admin/manage',
+        permission: 'admin.manage.index',
       },
       {
         label: 'Người dùng demo',

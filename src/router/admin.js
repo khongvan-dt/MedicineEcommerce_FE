@@ -5,8 +5,8 @@ const admin = {
   component: AppLayout,
   children: [
     {
-      path: 'users',
-      name: 'admin-user',
+      path: 'customers',
+      name: 'admin-customer',
       meta: {
         breadcrumb: ['Users'],
         permission: 'admin.users.index'
@@ -23,12 +23,20 @@ const admin = {
       component: () => import('@/views/admin/user-management/roles/Index.vue')
     },
     {
-      path: 'nguoidung',
-      name: 'admin-nguoidung',
+      path: 'users',
+      name: 'admin-users',
       meta: {
         breadcrumb: ['Quản lý người dùng']
       },
-      component: () => import('@/views/users/Index.vue')
+      component: () => import('@/views/admin/user-management/users/Index.vue')
+    },
+    {
+      path: 'ticketprices',
+      name: 'admin-ticketprices',
+      meta: {
+        breadcrumb: ['Quản lý giá vé']
+      },
+      component: () => import('@/views/admin/giave-management/giaves/Index.vue')
     },
   ]
 };

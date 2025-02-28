@@ -6,26 +6,15 @@ import { useAppStore } from './app';
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     isLoading: false,
-    isSuccess: false,
     message: '',
     errors: [],
     isAuthenticated: false,
     user: {},
-    token: {
-      accessToken: null,
-      expiredTime: null,
-      refreshToken: null,
-    },
-    registerState: {
-      isSuccess: false,
-    },
     credential: {
-      email: 'tiennd.ninasoft@gmail.com',
-      password: 'Tienhau@79'
+      email: 'tiennd77@gmail.com',
+      password: 'Tiennd@123',
+      rememberMe: true
     },
-
-    verifySuccess: false,
-    verificationStatus: null,
     redirectUrl: '',
   }),
   getters: {
@@ -39,18 +28,18 @@ export const useAuthStore = defineStore('auth', {
 
       sendPost('auth/login', credential)
         .then((response) => {
-          localStorage.saveToken(response.data.token);
-          localStorage.setUser(response.data.user);
+          localStorage.saveToken(response.data);
+          // localStorage.setUser(response.data.user);
           this.isAuthenticated = true;
+          
           appStore.$patch({
-            toast: { detail: response.message, severity: response.status == 200 ? 'success' : 'error' },
+            toast: { detail: 'Đăng nhập thành công', severity: 'success'},
             loading: false,
-            selectedCompany: response.data.user.companies.length ? response.data.user.companies[0] : 0
           })
         })
         .catch((error) => {
-          this.errors = error.data?.errors;
-          appStore.$patch({ toast: { detail: error.message, severity: 'error', visible: true } });
+          this.errors = error.response.data;
+          appStore.$patch({ toast: { detail: error.response.data?.message, severity: 'error', visible: true } });
         })
         .finally(() => {
           this.isLoading = false;

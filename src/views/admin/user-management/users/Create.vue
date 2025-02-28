@@ -1,38 +1,38 @@
 <script setup>
-import { useRoleStore } from '@/stores/role';
+import { useUserStore } from '@/stores/user';
 import { required } from '@/utils/validators';
 import { useVuelidate } from '@vuelidate/core';
 import { storeToRefs } from 'pinia';
 import { computed } from "vue";
 
 const props = defineProps({ visible: Boolean})
-const roleStore = useRoleStore()
-const { role, form, errors } = storeToRefs(roleStore)
+const userStore = useUserStore()
+const { user, form, errors } = storeToRefs(userStore)
 const formVisible = computed(()=>props.visible)
-const title = computed(()=>role.value.id?'Cập nhật vai trò' : 'Tạo mới vai trò')
+const title = computed(()=>user.value.id?'Cập nhật người dùng' : 'Tạo mới người dùng')
 const status = [
   { key: 1, name: 'Hoạt động' },
   { key: 0, name: 'Không hoạt động' },
 ];
 const rules = {
-  role: {
+  user: {
     name: { required },
     active: { required },
     description: { required },
   }
 }
-const v$ = useVuelidate(rules, {role}, { $autoDirty: true, $externalResults: errors})
+const v$ = useVuelidate(rules, {user}, { $autoDirty: true, $externalResults: errors})
 
 function onCancel() {
-  roleStore.$patch({ form: { visible: false } })
+  userStore.$patch({ form: { visible: false } })
 }
 function onHide() {
-  roleStore.resetForm();
+  userStore.resetForm();
   v$.value.$reset()
 }
 function onShow() {
-  if (role.value.id) {
-    roleStore.edit(1, role.value.id)
+  if (user.value.id) {
+    userStore.edit(1, user.value.id)
   }
 }
 async function onSave(event) {
@@ -44,12 +44,12 @@ async function onSave(event) {
   }
 
   const payload = {
-    ...role.value,
+    ...user.value,
     permissions: []
   };
 
-  if (!role.value.id) roleStore.store(payload);
-  else roleStore.update(payload);
+  if (!user.value.id) userStore.store(payload);
+  else userStore.update(payload);
 }
 </script>
 <template>
@@ -59,10 +59,10 @@ async function onSave(event) {
       <div class="flex flex-col gap-1 w-full">
         <label for="name">Tên vai trò</label>
         <div class="flex flex-col gap-1">
-          <InputText autoFocus id="name" v-model="role.name" placeholder="Nhập tên vai trò" class="w-full"
-            :invalid="v$.role.name.$error" />
-          <Message v-if="v$.role.name.$error"
-            v-for="(error, index) of v$.role.name.$errors" :key="index" severity="error" size="small"
+          <InputText autoFocus id="name" v-model="user.name" placeholder="Nhập tên vai trò" class="w-full"
+            :invalid="v$.user.name.$error" />
+          <Message v-if="v$.user.name.$error"
+            v-for="(error, index) of v$.user.name.$errors" :key="index" severity="error" size="small"
             variant="simple">
             {{ error.$message }}
           </Message>
@@ -72,12 +72,12 @@ async function onSave(event) {
         <label for="active">Trạng thái</label>
         <div class="flex flex-col md:flex-row gap-4">
           <div class="flex items-center gap-2" v-for="statusItem in status" :key="statusItem">
-            <RadioButton v-model="role.active" :value="statusItem.key" />
+            <RadioButton v-model="user.active" :value="statusItem.key" />
             <label for="key">{{ statusItem.name }}</label>
           </div>
         </div>
-        <Message v-if="v$.role.active.$error"
-          v-for="(error, index) of v$.role.active.$errors" :key="index" severity="error" size="small"
+        <Message v-if="v$.user.active.$error"
+          v-for="(error, index) of v$.user.active.$errors" :key="index" severity="error" size="small"
           variant="simple">
           {{ error.$message }}
         </Message>
@@ -85,10 +85,10 @@ async function onSave(event) {
       <div class="flex flex-col gap-1 w-full">
         <label for="description">Ghi chú</label>
         <div class="flex flex-col gap-1">
-          <Textarea  autoFocus id="description" v-model="role.description" placeholder="Nhập ghi chú vai trò" class="w-full"
-            :invalid="v$.role.description.$error" ></Textarea>
-          <Message v-if="v$.role.description.$error"
-            v-for="(error, index) of v$.role.description.$errors" :key="index" severity="error" size="small"
+          <Textarea  autoFocus id="description" v-model="user.description" placeholder="Nhập ghi chú vai trò" class="w-full"
+            :invalid="v$.user.description.$error" ></Textarea>
+          <Message v-if="v$.user.description.$error"
+            v-for="(error, index) of v$.user.description.$errors" :key="index" severity="error" size="small"
             variant="simple">
             {{ error.$message }}
           </Message>

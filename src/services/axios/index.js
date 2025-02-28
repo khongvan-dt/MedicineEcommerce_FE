@@ -49,18 +49,19 @@ const buildURLQueryFromObject = (params, skipObjects, prefix) => {
 };
 
 const handleResponse = (resolve, reject, response) => {
-  if (response?.data?.status == 200) {
-    resolve(response.data);
-  } else {
-    reject(response.data);
-  }
+  
+  // if (response?.data?.status == 200) {
+    resolve(response);
+  // } else {
+  //   reject(response.data);
+  // }
 };
 
 const handleError = (reject, error) => {
-  error = Object.assign(error, {
-    status: 500,
-    message: 'Có lỗi kết nối với máy chủ hệ thống',
-  });
+  // error = Object.assign(error, {
+  //   status: 500,
+  //   message: 'Có lỗi kết nối với máy chủ hệ thống',
+  // });
 
   reject(error);
 };

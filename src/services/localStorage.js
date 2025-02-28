@@ -36,10 +36,10 @@ export const setExpiresIn = (val) => {
   return window.localStorage.setItem(authentication.expiresIn, val);
 }
 export const saveToken = token => {
-  setAccessToken(token.access_token);
-  setRefreshToken(token.refresh_token);
-  setExpiresIn(token.expires_in);
-  // window.localStorage.setItem(authentication.loginTime, moment().utc())
+  setAccessToken(token.accessToken);
+  setRefreshToken(token.refreshToken);
+  setExpiresIn(token.expiresIn);
+  window.localStorage.setItem(authentication.loginTime, new Date());
 }
 
 export const getLocale = () => {
