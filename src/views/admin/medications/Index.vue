@@ -1,307 +1,132 @@
 <script>
-    import { dataTablePagination, filterTypes } from '@/constants';
-    import { getPerPage, setPerPage } from '@/services/localStorage';
-    import { useOrganizationStore } from '@/stores/organization';
-    import { mapState } from 'pinia';
-    import { ref } from 'vue';
-    import { useRouter } from 'vue-router';
-    import CreateForm from './Create.vue';
-    
-    export default {
-        components: {
-            CreateForm
-        },
-        setup() {
-            const router = useRouter();
-            const organizationStore = useOrganizationStore();
-            const columns = ref([
-               
-                { field: 'name', label: 'Khách hàng', visible: true, disabled: true },
-                 
-                {
-                    field: 'created_at',
-                    label: 'Ngày tạo',
-                    visible: true,
-                    disabled: false
-                },
-                {
-                    field: 'created_by',
-                    label: 'Người tạo',
-                    visible: false,
-                    disabled: false
-                },
-                {
-                    field: 'updated_at',
-                    label: 'Ngày cập nhật',
-                    visible: false,
-                    disabled: false
-                },
-                {
-                    field: 'updated_by',
-                    label: 'Người cập nhật',
-                    visible: false,
-                    disabled: false
-                },
-             ]);
-            
-            const checkedAll = ref(false);
-            const tableRef = ref();
-            const perPage = ref(parseInt(getPerPage() ?? dataTablePagination.perPage)); 
-    
-            return {
-                organizationStore,
-                columns,
-                 checkedAll,
-                perPage,
-                tableRef
-            };
-        },
-    
-        data() {
-            const menuItems = ref([
-                {
-                    label: 'Cập nhật',
-                    icon: 'pi pi-pencil',
-                    command: () => this.openForm(this.organizationSelected?.id)
-                },
-                
-                
-                {
-                    label: 'Xoá',
-                    icon: 'pi pi-trash',
-                    command: () => this.deleteOrganization(this.organizationSelected?.id)
-                }
-            ]);
-    
-            return {
-                dataTablePagination,
-                organizationSelected: null,
-                menuItems,
-                filters: null
-            };
-        },
-    
-        computed: {
-            ...mapState(useOrganizationStore, ['isLoading', 'organizations', 'form', 'pagination', 'reLoaded', 'lazyParams', 'visibleColumns'])
-        },
-    
-        watch: {
-            reLoaded(newValue) {
-                if (newValue) {
-                    this.organizationStore.search(1, { ...this.lazyParams, ...this.pagination });
-                }
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useOrganizationStore } from '@/stores/organization';
+import { useConfirm } from 'primevue/useconfirm';  // Import PrimeVue Confirm
+import CreateForm from './Create.vue';
+import { Medicines } from '@/services/admin/Medicines';
+
+export default {
+    components: { CreateForm },
+    setup() {
+        const medicines = ref([]);
+        const form = ref({ visible: false });
+        const router = useRouter();
+        const organizationStore = useOrganizationStore();
+        const selectedMedicines = ref([]);
+        const confirm = useConfirm();  
+
+        const columns = ref([
+            { field: 'name', label: 'Medicines Name', visible: true },
+            { field: 'created_at', label: 'Created At', visible: true },
+            { field: 'code', label: 'Code', visible: false },
+            { field: 'origin', label: 'Origin', visible: false },
+            { field: 'manufacturer', label: 'Manufacturer', visible: false }
+        ]);
+
+        onMounted(async () => {
+            try {
+                const response = await Medicines.getMedicines();
+                medicines.value = response.data;
+            } catch (error) {
+                console.error('Lỗi khi lấy dữ liệu medicines:', error);
             }
-        },
-    
-        created() {
-            this.initFilters();
-        },
-    
-        mounted() {
-            // this.organizationStore.getFilterAndSortData(1, { entity: 'organization', property: 'crm_organizations.owner_id' }, 'owner_id');
-            // this.organizationStore.getFilterAndSortData(1, { entity: 'organization', property: 'crm_organizations.created_by' }, 'created_by');
-            // this.organizationStore.getFilterAndSortData(1, { entity: 'organization', property: 'crm_organizations.updated_by' }, 'updated_by');
-        },
-    
-        methods: {
-    
-            initFilters() {
-                // const filters = {
-                //     global: filterTypes.CONTAINS,
-                //     owner_id: filterTypes.IN,
-                //     created_by: filterTypes.IN,
-                //     updated_by: filterTypes.IN,
-                //     created_at: filterTypes.DATE_IS,
-                //     updated_at: filterTypes.DATE_IS,
-                //     follow: filterTypes.IN
-                // };
-                // this.filters = filters;
-                // this.organizationStore.$patch({ lazyParams: { ...this.lazyParams, filters: filters }, reLoaded: true });
-            },
-    
-            // onFilterChange(e) {
-            //     this.organizationStore.$patch({ pagination: { page: 1 }, reLoaded: true });
-            // },
-            clearFilter() {
-                this.initFilters();
-                this.filters.global.value = '';
-            },
-            clearSearch() {
-                this.filters.global.value = '';
-                this.organizationStore.$patch((state) => (state.reLoaded = true));
-            },
-    
-            openForm(id = null, clone = false) {
-                if (id) {
-                    if (clone) this.organizationStore.edit(1, id, clone);
-                    else this.organizationStore.edit(1, id);
-                } else this.organizationStore.create(1);
-    
-                this.organizationStore.$patch({ form: { visible: true } });
-            },
-    
-            hideForm() {
-                this.organizationStore.$patch({ form: { visible: false } });
-            },
-    
-            deleteOrganization(id) {
-                this.$confirm.require({
-                    message: 'Bạn có chắc chắn muốn xóa bản ghi này không?',
-                    header: 'Xác nhận',
-                    icon: 'pi pi-info-circle',
-                    rejectLabel: 'Huỷ',
-                    acceptLabel: 'Đồng ý',
-                    rejectClass: 'p-button-secondary p-button-outlined',
-                    acceptClass: 'p-button-danger',
-                    accept: () => {
-                        this.organizationStore.delete(1, id);
+        });
+
+        // 🛠 Hiển thị hộp thoại xác nhận trước khi xóa nhiều mục
+        const confirmDeleteSelected = () => {
+            if (!selectedMedicines.value.length) {
+                alert('Vui lòng chọn ít nhất một mục để xóa.');
+                return;
+            }
+
+            confirm.require({
+                message: `Bạn có chắc chắn muốn xóa ${selectedMedicines.value.length > 1 ? 'các bản ghi đã chọn' : 'bản ghi này'} không?`,
+                header: 'Xác nhận',
+                icon: 'pi pi-info-circle',
+                rejectLabel: 'Huỷ',
+                acceptLabel: 'Đồng ý',
+                rejectClass: 'p-button-secondary p-button-outlined',
+                acceptClass: 'p-button-danger',
+                accept: async () => {
+                    try {
+                        const idsToDelete = selectedMedicines.value.map((med) => med.id);
+                        await Medicines.deleteMedicines(idsToDelete);
+                        medicines.value = medicines.value.filter((med) => !idsToDelete.includes(med.id));
+                        selectedMedicines.value = [];
+                    } catch (error) {
+                        console.error('Lỗi khi xóa thuốc:', error);
                     }
-                });
-            },
-    
-            toggleFollow(e, data) {
-                e.preventDefault();
-                const id = data.id;
-    
-                if (data.follow) {
-                    this.$confirm.require({
-                        message: 'Bạn có chắc chắn muốn hủy theo dõi khách hàng này không?',
-                        header: 'Xác nhận',
-                        icon: 'pi pi-exclamation-triangle',
-                        rejectLabel: 'Không',
-                        acceptLabel: 'Đồng ý',
-                        rejectClass: 'p-button-secondary p-button-outlined',
-                        acceptClass: 'p-button-danger',
-                        accept: () => {
-                            this.organizationStore.follow(1, id);
-                        }
-                    });
-                } else {
-                    this.organizationStore.follow(1, id);
                 }
-            },
-    
-            toggleColumn(event) {
-                this.$refs.opColumn.toggle(event);
-            },
-    
-            toggle(ev, data) {
-                this.$refs.menuRef.toggle(ev);
-                this.organizationSelected = data;
-            },
-            toggleSearch(event) {
-                this.$refs.searchPanel.toggle(event);
-            },
-            handleShow(type) {
-                this.dialogType = type;
-                this.organizationStore.$patch({ form: { showDialog: true } });
-            },
-            hideDialog() {
-                this.organizationStore.resetForm();
-                this.dialogStore.resetForm();
-            },
-            handleRowClick(data) {
-                this.$router.push({ name: 'OrganizationDetail', params: { id: data.id } });
-            },
-    
-            print() {},
-            exportData() {},
-    
-            handleSortOderChange(oder) {
-                this.organizationStore.$patch({ lazyParams: { ...this.lazyParams, sortOrder: oder == -1 ? 'desc' : 'asc' }, reLoaded: true });
-            },
-            onPage(event) {
-                const pagination = {
-                    ...this.pagination,
-                    first: event.first,
-                    page: event.page + 1
-                };
-                this.organizationStore.$patch({ pagination: pagination });
-                this.organizationStore.search(1, {
-                    ...this.lazyParams,
-                    ...pagination
-                });
-            },
-            onSort(event) {
-                const lazyParams = {
-                    ...this.lazyParams,
-                    ...this.pagination,
-                    sortField: event.sortField,
-                    sortOrder: event.sortOrder == -1 ? 'desc' : 'asc'
-                };
-                this.organizationStore.$patch({ lazyParams: lazyParams, reLoaded: true });
-            },
-            onRows(event) {
-                const pagination = {
-                    ...this.pagination,
-                    page: 1,
-                    perPage: event
-                };
-                setPerPage(event);
-                this.organizationStore.$patch({ pagination: pagination, reLoaded: true });
-            },
-            handleSearchDataTable() {
-                clearTimeout(this.timeoutId);
-                this.timeoutId = setTimeout(() => {
-                    this.organizationStore.search(1, {
-                        ...this.lazyParams,
-                        ...this.pagination,
-                        page: 1
-                    });
-                }, 500);
-            },
-    
-            randomBackground() {
-                const maxColor = 17;
-                const randomIndex = Math.floor(Math.random() * maxColor);
-                return randomIndex;
-            },
-    
-            onSave() {
-                this.organizationStore.$patch({ form: { visible: false } });
-            }
-        }
-    };
-    </script>
-    
-    <template>
-        <div class="card">
-            <ConfirmDialog></ConfirmDialog>
-            <DataTable :value="permissions" dataKey="id" :paginator="true" :rows="5" showCurrentPageReport scrollable responsiveLayout>
-                <template #header>
-                    <div class="flex justify-between items-center">
-                        <span class="font-semibold text-xl">Permission Table</span>
-                        <Button type="button" icon="pi pi-user-plus" label="Thêm mới" outlined @click="openForm(null)" />
+            });
+        };
+
+        // 🛠 Hiển thị hộp thoại xác nhận trước khi xóa từng mục
+        const confirmDelete = (id) => {
+            confirm.require({
+                message: `Bạn có chắc chắn muốn xóa bản ghi này không?`,
+                header: 'Xác nhận',
+                icon: 'pi pi-info-circle',
+                rejectLabel: 'Huỷ',
+                acceptLabel: 'Đồng ý',
+                rejectClass: 'p-button-secondary p-button-outlined',
+                acceptClass: 'p-button-danger',
+                accept: async () => {
+                    try {
+                        await Medicines.deleteMedicines([id]);
+                        medicines.value = medicines.value.filter((med) => med.id !== id);
+                    } catch (error) {
+                        console.error('Lỗi khi xóa thuốc:', error);
+                    }
+                }
+            });
+        };
+
+        return { 
+            medicines, columns, form, selectedMedicines, 
+            confirmDeleteSelected, confirmDelete, 
+        };
+    }
+};
+
+
+</script>
+
+<template>
+    <div class="card">
+        <ConfirmDialog />
+        <DataTable v-model:selection="selectedMedicines" :value="medicines" dataKey="id" :paginator="true" :rows="5" showCurrentPageReport scrollable>
+            <template #header>
+                <div class="flex flex-wrap gap-2 items-center justify-between">
+                    <span class="font-semibold text-xl">Medicines Table</span>
+                    <div class="flex gap-2 mx-auto">
+                        <IconField class="w-full sm:w-80 order-1 sm:order-none">
+                            <InputIcon class="pi pi-search" />
+                            <InputText placeholder="Tìm kiếm..." class="w-full" />
+                        </IconField>
+                        <Button icon="pi pi-filter-slash" severity="secondary" outlined @click="" />
                     </div>
+                    <Button type="button" icon="pi pi-trash" label="Xóa các mục đã chọn" 
+                    class="w-full sm:w-auto order-none sm:order-1 p-button-danger" 
+                    @click="confirmDeleteSelected()" />
+                                    <Button type="button" icon="pi pi-user-plus" label="Thêm mới" outlined @click="openForm()" />
+                </div>
+            </template>
+            <Column selectionMode="multiple" style="width: 3rem"></Column>
+
+            <Column v-for="col in columns" :key="col.field" :field="col.field" :header="col.label" sortable>
+                <template #body="{ data }">{{ data[col.field] }}</template>
+            </Column>
+
+            <Column header="Tác vụ">
+                <template #body="{ data }">
+                    <Button icon="pi pi-pencil" outlined class="mr-2" @click="openForm(data.id)" />
+                    <Button icon="pi pi-trash" outlined severity="danger" @click="confirmDelete(data.id)" />
                 </template>
-    
-                <Column field="name" header="Permission name" sortable>
-                    <template #body="{ data }">
-                        <span class="text-primary cursor-pointer">{{ data.name }}</span>
-                    </template>
-                </Column>
-    
-                <Column field="created_by" header="Người tạo" sortable>
-                    <template #body="{ data }">
-                        {{ data.created_by }}
-                    </template>
-                </Column>
-    
-                <Column field="created_at" header="Ngày tạo" sortable>
-                    <template #body="{ data }">
-                        {{ data.created_at }}
-                    </template>
-                </Column>
-    
-                <Column field="action" header="Tác vụ">
-                    <template #body="{ data }">
-                        <Button icon="pi pi-pencil" outlined class="mr-2" @click="openForm(data.id)" />
-                        <Button icon="pi pi-trash" outlined severity="danger" @click="deletePermission(data.id)" />
-                    </template>
-                </Column>
-            </DataTable>
-            <Menu :model="menuItems" ref="menuRef" popup class="w-20rem" />
-            <CreateForm v-model:visible="form.visible" />
-        </div>
-    </template>
-    
+            </Column>
+        </DataTable>
+
+        <Menu :model="menuItems" popup />
+        <CreateForm v-model:visible="form.visible" />
+    </div>
+</template>
